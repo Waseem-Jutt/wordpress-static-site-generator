@@ -3,3 +3,5 @@
 __pycache__
 venv
 allow-urls.txt
+wordpress_export.log
+exported_site_*
