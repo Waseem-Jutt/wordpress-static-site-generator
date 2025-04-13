@@ -1,0 +1,5 @@
+.qodo
+.env
+__pycache__
+venv
+allow-urls.txt
