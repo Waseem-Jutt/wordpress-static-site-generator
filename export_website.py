@@ -265,6 +265,40 @@ def collect_all_internal_links():
     logging.info(f"Total unique links found across the site: {len(all_internal_links)}")
     return list(all_internal_links)
 
+def process_srcset_images(soup, page_url):
+    """Process all images with srcset attributes and download them"""
+    for img in soup.find_all("img", srcset=True):
+        srcset = img["srcset"]
+        new_srcset = []
+        
+        # Split the srcset into individual sources
+        sources = [s.strip() for s in srcset.split(",")]
+        
+        for source in sources:
+            # Split into URL and size descriptor
+            parts = source.strip().split(" ")
+            if len(parts) >= 1:
+                img_url = parts[0]
+                size_descriptor = " ".join(parts[1:]) if len(parts) > 1 else ""
+                
+                # Make the URL absolute if it's relative
+                img_url = urljoin(page_url, img_url)
+                
+                # Get the path after the domain
+                img_path = urlparse(img_url).path.lstrip("/")
+                
+                # Create the full path in export folder maintaining original structure
+                img_file_path = os.path.join(export_folder, img_path)
+                
+                if download_file(img_url, img_file_path, "media"):
+                    # Update src to point to the root level path
+                    new_url = f"{url_to_replace}{img_path}"
+                    new_srcset.append(f"{new_url} {size_descriptor}".strip())
+        
+        # Update the srcset attribute with the new URLs
+        if new_srcset:
+            img["srcset"] = ", ".join(new_srcset)
+
 def process_page(page_url):
     """Process a single page and save it to the export folder"""
     try:
@@ -344,6 +378,9 @@ def process_page(page_url):
                 if download_file(img_url, img_file_path, "media"):
                     # Update src to point to the root level path
                     img["src"] = f"{url_to_replace}{img_path}"
+        
+        # Process srcset images
+        process_srcset_images(soup, page_url)
 
         # Replace all domain URLs with url_to_replace in one shot
         soup = replace_domain_urls(soup, page_url)

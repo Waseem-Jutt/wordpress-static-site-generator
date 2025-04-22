@@ -5,3 +5,4 @@ venv
 allow-urls.txt
 wordpress_export.log
 exported_site_*
+.DS_Store
