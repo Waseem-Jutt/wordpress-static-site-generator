@@ -1,0 +1,16 @@
+# Use an official Nginx image to serve the built React app
+FROM nginx:alpine
+
+# Copy all files and then remove PHP files
+COPY exported_site_20250429_012734/ /usr/share/nginx/html/
+RUN find /usr/share/nginx/html/ -name "*.php" -type f -delete && \
+    cp /usr/share/nginx/html/sitemap_index.xml /usr/share/nginx/html/sitemap.xml
+
+# Copy nginx config
+COPY docker/nginx_ui.conf /etc/nginx/nginx.conf
+
+# Expose port 80 for Nginx
+EXPOSE 80
+
+# Start Nginx to serve the React app
+CMD ["nginx", "-g", "daemon off;"]
