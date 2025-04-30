@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transcure-ui
+  name: company-ui
   namespace: test
   labels:
-    app: transcure-ui
+    app: company-ui
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: transcure-ui
+      app: company-ui
   template:
     metadata:
       labels:
-        app: transcure-ui
+        app: company-ui
     spec:
       imagePullSecrets:
       - name: my-docker-secret
       containers:
-      - name: transcure-ui
+      - name: company-ui
         image: $(IMAGE_NAME):$(TAG)-ui
         imagePullPolicy: Always
         ports:
