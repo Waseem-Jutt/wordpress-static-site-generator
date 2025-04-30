@@ -14,8 +14,8 @@ source venv/bin/activate
 
 # Step 3: Install dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Step 4: Run your script
 echo "Running export_website.py..."
-python export_website.py
+python3 export_website.py
